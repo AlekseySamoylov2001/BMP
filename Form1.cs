@@ -257,5 +257,10 @@ namespace BMP1
             gist3 = new Form2(Blue);
             gist3.Show();
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
