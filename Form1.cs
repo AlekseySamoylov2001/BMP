@@ -47,6 +47,25 @@ namespace BMP1
             DefaultDataGrid();
         }
 
+        private void GetColors()
+        {
+            for (var y = 0; y < srcImage.Height; y++)
+            {
+                Red[y] = new int[srcImage.Width];
+                Green[y] = new int[srcImage.Width];
+                Blue[y] = new int[srcImage.Width];
+
+                for (var x = 0; x < srcImage.Width; x++)
+                {
+                    var srcPixel = srcImage.GetPixel(x, y);
+
+                    Red[y][x] = srcPixel.R;
+                    Green[y][x] = srcPixel.G;
+                    Blue[y][x] = srcPixel.B;
+                }
+            }
+        }
+
         private double M_k(int[][] color, int k)
         {
             double sum = 0;
@@ -201,10 +220,6 @@ namespace BMP1
                 FillColumn(Red, 1, minR, maxR);
                 FillColumn(Green, 2, minG, maxG);
                 FillColumn(Blue, 3, minB, maxB);
-
-                button2.Enabled = true;
-                button3.Enabled = true;
-                button4.Enabled = true;
 
                 return 0;
             }
@@ -362,21 +377,7 @@ namespace BMP1
             Green = new int[srcImage.Height][];
             Blue = new int[srcImage.Height][];
 
-            for (var y = 0; y < srcImage.Height; y++)
-            {
-                Red[y] = new int[srcImage.Width];
-                Green[y] = new int[srcImage.Width];
-                Blue[y] = new int[srcImage.Width];
-
-                for (var x = 0; x < srcImage.Width; x++)
-                {
-                    var srcPixel = srcImage.GetPixel(x, y);
-
-                    Red[y][x] = srcPixel.R;
-                    Green[y][x] = srcPixel.G;
-                    Blue[y][x] = srcPixel.B;
-                }
-            }
+            GetColors();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -415,6 +416,7 @@ namespace BMP1
 
         private void button6_Click(object sender, EventArgs e)
         {
+            GetColors();
             Bitmap img = new Bitmap(srcImage, new Size(300, 300));
             pictureBox1.Image = img;
         }
@@ -425,11 +427,19 @@ namespace BMP1
             {
                 if (FillTabl() == 0)
                     button7.Text = "Сбросить таблицу";
+
+                button2.Enabled = true;
+                button3.Enabled = true;
+                button4.Enabled = true;
             }
             else
             {
                 ClearTabl();
                 button7.Text = "Расчитать данные";
+
+                button2.Enabled = false;
+                button3.Enabled = false;
+                button4.Enabled = false;
             }
         }
 
