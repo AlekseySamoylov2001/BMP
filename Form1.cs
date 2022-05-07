@@ -15,7 +15,7 @@ namespace BMP1
         int[][] Red;
         int[][] Green;
         int[][] Blue;
-
+        Bitmap srcImage;
         public Form1()
         {
             InitializeComponent();
@@ -144,6 +144,52 @@ namespace BMP1
             return entropy - entropy / Math.Log(h + 1, 2);
         }
 
+        private int FillTabl()
+        {
+            if (srcImage != null)
+            {     
+                int minR = 256, maxR = -1;
+                int minG = 256, maxG = -1;
+                int minB = 256, maxB = -1;
+
+                for (var y = 0; y < srcImage.Height; y++)
+                {
+                    for (var x = 0; x < srcImage.Width; x++)
+                    {
+                        minR = Red[y][x].CompareTo(minR) < 0 ? Red[y][x] : minR;
+                        minG = Green[y][x].CompareTo(minG) < 0 ? Green[y][x] : minG;
+                        minB = Blue[y][x].CompareTo(minB) < 0 ? Blue[y][x] : minB;
+                        maxR = Red[y][x].CompareTo(maxR) > 0 ? Red[y][x] : maxR;
+                        maxG = Green[y][x].CompareTo(maxG) > 0 ? Green[y][x] : maxG;
+                        maxB = Blue[y][x].CompareTo(maxB) > 0 ? Blue[y][x] : maxB;
+                    }
+                }
+
+                FillColumn(Red, 1, minR, maxR);
+                FillColumn(Green, 2, minG, maxG);
+                FillColumn(Blue, 3, minB, maxB);
+
+                button2.Enabled = true;
+                button3.Enabled = true;
+                button4.Enabled = true;
+
+                return 0;
+            }
+            else
+            {
+                MessageBox.Show("Изображение не выбрано");
+                return -1;
+            }
+
+        }
+
+        private void ClearTabl()
+        {
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                for (int j = 1; j < dataGridView1.Columns.Count; j++)
+                    dataGridView1.Rows[i].Cells[j].Value = "";
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             var filePath = string.Empty;
@@ -159,21 +205,16 @@ namespace BMP1
                     filePath = openFileDialog.FileName;
             }
 
-            var srcImage = new Bitmap(filePath);
+            srcImage = new Bitmap(filePath);
+
+            Bitmap img = new Bitmap(srcImage, new Size(308, 308));
+            pictureBox1.Image = img;
 
             label1.Text = "Размер: " + srcImage.Width.ToString() + "x" + srcImage.Height.ToString() + "pi";
-            label2.Text = "Кол-во пикселей: " + (srcImage.Width*srcImage.Height).ToString();
-
-            label1.Visible = true;
-            label2.Visible = true;
 
             Red = new int[srcImage.Height][];
             Green = new int[srcImage.Height][];
             Blue = new int[srcImage.Height][];
-
-            int minR = 256, maxR = -1;
-            int minG = 256, maxG = -1;
-            int minB = 256, maxB = -1;
 
             for (var y = 0; y < srcImage.Height; y++)
             {
@@ -188,26 +229,8 @@ namespace BMP1
                     Red[y][x] = srcPixel.R;
                     Green[y][x] = srcPixel.G;
                     Blue[y][x] = srcPixel.B;
-
-                    minR = ((int)srcPixel.R).CompareTo(minR) < 0 ? srcPixel.R : minR;
-                    minG = ((int)srcPixel.G).CompareTo(minG) < 0 ? srcPixel.G : minG;
-                    minB = ((int)srcPixel.B).CompareTo(minB) < 0 ? srcPixel.B : minB;
-                    maxR = ((int)srcPixel.R).CompareTo(maxR) > 0 ? srcPixel.R : maxR;
-                    maxG = ((int)srcPixel.G).CompareTo(maxG) > 0 ? srcPixel.G : maxG;
-                    maxB = ((int)srcPixel.B).CompareTo(maxB) > 0 ? srcPixel.B : maxB;
                 }
             }
-
-            Bitmap img = new Bitmap(srcImage, new Size(308, 308));
-            pictureBox1.Image = img;
-
-            FillColumn(Red, 1, minR, maxR);
-            FillColumn(Green, 2, minG, maxG);
-            FillColumn(Blue, 3, minB, maxB);
-
-            button2.Enabled = true;
-            button3.Enabled = true;
-            button4.Enabled = true;
         }
 
         private void FillColumn(int[][] color, int column, int min, int max)
@@ -239,28 +262,55 @@ namespace BMP1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form2 gist1;
-            gist1 = new Form2(Red);
+            Form2 gist1 = new Form2(Red);
             gist1.Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Form2 gist2;
-            gist2 = new Form2(Green);
+            Form2 gist2 = new Form2(Green);
             gist2.Show();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 gist3;
-            gist3 = new Form2(Blue);
+            Form2 gist3 = new Form2(Blue);
             gist3.Show();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            dataGridView2.Rows.Add();
+            dataGridView2.Rows.Add();
+            dataGridView2.Rows[0].Height = 35;
+            dataGridView2.Rows[1].Height = 35;
+            dataGridView2.Rows[2].Height = 35;
+            dataGridView2.Rows[0].Cells[0].Value = 1;
+        }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (button7.Text == "Расчитать данные")
+            {
+                if (FillTabl() == 0)
+                    button7.Text = "Сбросить таблицу";
+            }
+            else
+            {
+                ClearTabl();
+                button7.Text = "Расчитать данные";
+            }
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.Show();
         }
     }
 }
