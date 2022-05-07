@@ -1,0 +1,11 @@
+C:\Users\Алексей\source\repos\BMP1\BMP1\bin\Debug\BMP1.exe.config
+C:\Users\Алексей\source\repos\BMP1\BMP1\bin\Debug\BMP1.exe
+C:\Users\Алексей\source\repos\BMP1\BMP1\bin\Debug\BMP1.pdb
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.csprojAssemblyReference.cache
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.Form1.resources
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.Properties.Resources.resources
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.csproj.GenerateResource.cache
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.csproj.CoreCompileInputs.cache
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.exe
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.pdb
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.Form2.resources
