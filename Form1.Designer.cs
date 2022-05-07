@@ -65,9 +65,9 @@ namespace BMP1
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.Bisque;
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(20, 12);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(308, 43);
+            this.button1.Size = new System.Drawing.Size(300, 43);
             this.button1.TabIndex = 0;
             this.button1.Text = "Выбрать файл";
             this.button1.UseVisualStyleBackColor = false;
@@ -76,9 +76,9 @@ namespace BMP1
             // pictureBox1
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 61);
+            this.pictureBox1.Location = new System.Drawing.Point(20, 71);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(308, 308);
+            this.pictureBox1.Size = new System.Drawing.Size(300, 300);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
@@ -92,10 +92,11 @@ namespace BMP1
             this.button2.TabIndex = 4;
             this.button2.Text = "Гистограмма Red";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Value,
@@ -107,6 +108,7 @@ namespace BMP1
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridView1.Size = new System.Drawing.Size(420, 506);
             this.dataGridView1.TabIndex = 36;
             // 
@@ -162,7 +164,7 @@ namespace BMP1
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 377);
+            this.label1.Location = new System.Drawing.Point(17, 58);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(49, 13);
             this.label1.TabIndex = 39;
@@ -170,9 +172,9 @@ namespace BMP1
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(12, 455);
+            this.button5.Location = new System.Drawing.Point(20, 377);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(102, 37);
+            this.button5.Size = new System.Drawing.Size(94, 37);
             this.button5.TabIndex = 42;
             this.button5.Text = "Применить фильтр";
             this.button5.UseVisualStyleBackColor = true;
@@ -180,9 +182,9 @@ namespace BMP1
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 492);
+            this.button6.Location = new System.Drawing.Point(20, 414);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(102, 37);
+            this.button6.Size = new System.Drawing.Size(94, 37);
             this.button6.TabIndex = 43;
             this.button6.Text = "Сбросить фильтрацию";
             this.button6.UseVisualStyleBackColor = true;
@@ -232,6 +234,7 @@ namespace BMP1
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(96, 21);
             this.comboBox2.TabIndex = 48;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -248,14 +251,15 @@ namespace BMP1
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Items.AddRange(new object[] {
             "Сглаживание шума",
-            "НЧ-фильтр",
-            "ВЧ-фильтр",
+            "Подчёркивание линий",
+            "Подчёркивание границ",
             "Выделение перепадов",
             "Операторы Лапласа"});
             this.comboBox3.Location = new System.Drawing.Point(176, 430);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(144, 21);
             this.comboBox3.TabIndex = 50;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -276,9 +280,9 @@ namespace BMP1
             dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
-            this.dataGridView2.ColumnHeadersHeight = 213;
+            this.dataGridView2.ColumnHeadersHeight = 21;
             this.dataGridView2.ColumnHeadersVisible = false;
             this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -292,6 +296,7 @@ namespace BMP1
             dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle12;
+            this.dataGridView2.Enabled = false;
             this.dataGridView2.Location = new System.Drawing.Point(215, 459);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(0);
             this.dataGridView2.Name = "dataGridView2";
@@ -300,7 +305,6 @@ namespace BMP1
             this.dataGridView2.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridView2.Size = new System.Drawing.Size(108, 108);
             this.dataGridView2.TabIndex = 51;
-            this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
             // 
             // Column1
             // 
@@ -334,12 +338,13 @@ namespace BMP1
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(12, 530);
+            this.button8.Location = new System.Drawing.Point(20, 452);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(102, 37);
+            this.button8.Size = new System.Drawing.Size(94, 37);
             this.button8.TabIndex = 53;
             this.button8.Text = "Выбрать матрицу весов";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // Form1
             // 

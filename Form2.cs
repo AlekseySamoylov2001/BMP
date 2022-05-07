@@ -34,7 +34,7 @@ namespace BMP1
             Series mySeriesOfPoint = new Series("Gist");
 
             mySeriesOfPoint.ChartType = SeriesChartType.Column;
-            mySeriesOfPoint.Palette = ChartColorPalette.SeaGreen;
+            mySeriesOfPoint.Palette = ChartColorPalette.Chocolate;
             mySeriesOfPoint.ChartArea = "Math functions";
 
             int[] points = new int[256];

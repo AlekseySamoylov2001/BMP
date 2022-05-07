@@ -9,3 +9,4 @@ C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.csproj.CoreCompile
 C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.exe
 C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.pdb
 C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.Form2.resources
+C:\Users\Алексей\source\repos\BMP1\BMP1\obj\Debug\BMP1.Form3.resources

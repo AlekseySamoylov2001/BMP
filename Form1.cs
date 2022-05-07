@@ -36,10 +36,33 @@ namespace BMP1
             dataGridView1.Rows.Add("u4");
             dataGridView1.Rows.Add("g1");
             dataGridView1.Rows.Add("g2");
+            dataGridView1.Rows.Add("K_g1");
+            dataGridView1.Rows.Add("K_g2");
             dataGridView1.Rows.Add("Распределение");
             dataGridView1.Rows.Add("Энтропия");
             dataGridView1.Rows.Add("Отн энтропия");
             dataGridView1.Rows.Add("Избыточность");
+
+            DefaultDataGrid();
+        }
+
+        private void DefaultDataGrid()
+        {
+            dataGridView2.Rows.Clear();
+            dataGridView2.Columns.Clear();
+
+            dataGridView2.Columns.Add("1", "1");
+            dataGridView2.Columns.Add("2", "2");
+            dataGridView2.Columns.Add("3", "3");
+            dataGridView2.Rows.Add();
+            dataGridView2.Rows.Add();
+
+            for (int i = 0; i < dataGridView2.Rows.Count; i++)
+                dataGridView2.Rows[i].Height = 35;
+            for (int i = 0; i < dataGridView2.Columns.Count; i++)
+                dataGridView2.Columns[i].Width = 35;
+
+            dataGridView2.CurrentCell = null;
         }
 
         static double M_k(int[][] color, int k)
@@ -147,7 +170,7 @@ namespace BMP1
         private int FillTabl()
         {
             if (srcImage != null)
-            {     
+            {
                 int minR = 256, maxR = -1;
                 int minG = 256, maxG = -1;
                 int minB = 256, maxB = -1;
@@ -207,7 +230,7 @@ namespace BMP1
 
             srcImage = new Bitmap(filePath);
 
-            Bitmap img = new Bitmap(srcImage, new Size(308, 308));
+            Bitmap img = new Bitmap(srcImage, new Size(300, 300));
             pictureBox1.Image = img;
 
             label1.Text = "Размер: " + srcImage.Width.ToString() + "x" + srcImage.Height.ToString() + "pi";
@@ -235,6 +258,9 @@ namespace BMP1
 
         private void FillColumn(int[][] color, int column, int min, int max)
         {
+            double K1 = Math.Abs(G_1(color) / Math.Sqrt((double)6 / (color.Length * color[0].Length)));
+            double K2 = Math.Abs(G_2(color) / Math.Sqrt((double)24 / (color.Length * color[0].Length)));
+
             dataGridView1[column, 0].Value = min;
             dataGridView1[column, 1].Value = max;
             dataGridView1[column, 2].Value = max - min;
@@ -251,13 +277,12 @@ namespace BMP1
             dataGridView1[column, 13].Value = Math.Round(U_4(color), 2);
             dataGridView1[column, 14].Value = Math.Round(G_1(color), 2);
             dataGridView1[column, 15].Value = Math.Round(G_2(color), 2);
-            dataGridView1[column, 16].Value =
-                Math.Abs(G_1(color) / Math.Sqrt(6 / color.Length * color[0].Length)) <= 3 &&
-                Math.Abs(G_2(color) / Math.Sqrt(24 / color.Length * color[0].Length)) <= 3 ?
-                "Нормальное" : "Не нормальное";
-            dataGridView1[column, 17].Value = Math.Round(Entropy(color), 2);
-            dataGridView1[column, 18].Value = Math.Round(RelativeEntropy(color, max - min), 2);
-            dataGridView1[column, 19].Value = Math.Round(Redundancy(color, max - min), 2);
+            dataGridView1[column, 16].Value = K1;
+            dataGridView1[column, 17].Value = K2;
+            dataGridView1[column, 18].Value = K1 <= 3 && K2 <= 3 ? "Нормальное" : "Не нормальное";
+            dataGridView1[column, 19].Value = Math.Round(Entropy(color), 2);
+            dataGridView1[column, 20].Value = Math.Round(RelativeEntropy(color, max - min), 2);
+            dataGridView1[column, 21].Value = Math.Round(Redundancy(color, max - min), 2);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -280,17 +305,22 @@ namespace BMP1
 
         private void button5_Click(object sender, EventArgs e)
         {
-            dataGridView2.Rows.Add();
-            dataGridView2.Rows.Add();
-            dataGridView2.Rows[0].Height = 35;
-            dataGridView2.Rows[1].Height = 35;
-            dataGridView2.Rows[2].Height = 35;
-            dataGridView2.Rows[0].Cells[0].Value = 1;
+            int[][] H = new int[dataGridView2.Rows.Count][];
+
+            for (int i = 0; i < dataGridView2.Rows.Count; i++)
+            {
+                H[i] = new int[dataGridView2.Columns.Count];
+
+                for (int j = 0; j < dataGridView2.Columns.Count; j++)
+                    H[i][j] = Convert.ToInt32(dataGridView2.Rows[i].Cells[j].Value);
+
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-
+            Bitmap img = new Bitmap(srcImage, new Size(300, 300));
+            pictureBox1.Image = img;
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -307,10 +337,51 @@ namespace BMP1
             }
         }
 
-        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void button8_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3();
+            Form3 form3 = new Form3(comboBox3.SelectedIndex, 3 + comboBox2.SelectedIndex * 2);
+            form3.Owner = this;
             form3.Show();
+        }
+
+        public void GridChange(DataGridView dataGridView)
+        {
+            dataGridView2.Rows.Clear();
+            dataGridView2.Columns.Clear();
+
+            int rowSize = 105 / dataGridView.Rows.Count;
+            int columnSize = 105 / dataGridView.Columns.Count;
+
+            dataGridView2.DefaultCellStyle = new DataGridViewCellStyle()
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+                Font = new Font(FontFamily.GenericSansSerif, rowSize / 2)
+            };
+
+            for (int i = 0; i < dataGridView.Columns.Count; i++)
+            {
+                dataGridView2.Columns.Add(i.ToString(), "1");
+                dataGridView2.Columns[i].Width = columnSize;
+            }
+
+            dataGridView2.Rows[0].Height = rowSize;
+
+            for (int i = 0; i < dataGridView.Rows.Count - 1; i++)
+            {
+                dataGridView2.Rows.Add();
+                dataGridView2.Rows[i].Height = rowSize;
+            }
+
+            for (int i = 0; i < dataGridView.Rows.Count; i++)
+                for (int j = 0; j < dataGridView.Columns.Count; j++)
+                    dataGridView2.Rows[i].Cells[j].Value = dataGridView.Rows[i].Cells[j].Value;
+
+            dataGridView2.CurrentCell = null;
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DefaultDataGrid();
         }
     }
 }
