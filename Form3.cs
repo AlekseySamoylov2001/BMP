@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BMP1
@@ -42,7 +37,7 @@ namespace BMP1
                             break;
 
                         case 5:
-                            Size = new Size(300, 320);
+                            Size = new Size(780, 320);
 
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, 1, 1, 1 },
@@ -51,11 +46,25 @@ namespace BMP1
                                 new int[] { 1, 1, 1, 1, 1 },
                                 new int[] { 1, 1, 1, 1, 1} },
                                aperture, 0));
+                            dataGrids.Add(CreateMatrix(new int[][] {
+                                new int[] { 1, 1, 1, 1, 1 },
+                                new int[] { 1, 2, 2, 2, 1 },
+                                new int[] { 1, 2, 4, 2, 1 },
+                                new int[] { 1, 2, 2, 2, 1 },
+                                new int[] { 1, 1, 1, 1, 1} },
+                              aperture, 1)); 
+                            dataGrids.Add(CreateMatrix(new int[][] {
+                                new int[] { 0, 1, 1, 1, 0 },
+                                new int[] { 1, 1, 2, 1, 1 },
+                                new int[] { 1, 2, 4, 2, 1 },
+                                new int[] { 1, 1, 2, 1, 1 },
+                                new int[] { 0, 1, 1, 1, 0} },
+                              aperture, 2));
 
                             break;
 
                         case 7:
-                            Size = new Size(380, 400);
+                            Size = new Size(700, 400);
 
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, 1, 1, 1, 1, 1 },
@@ -66,6 +75,15 @@ namespace BMP1
                                 new int[] { 1, 1, 1, 1, 1, 1, 1 },
                                 new int[] { 1, 1, 1, 1, 1, 1, 1 } },
                                aperture, 0));
+                            dataGrids.Add(CreateMatrix(new int[][] {
+                                new int[] { 1, 1, 1, 1, 1, 1, 1 },
+                                new int[] { 1, 2, 2, 2, 2, 2, 1 },
+                                new int[] { 1, 2, 4, 4, 4, 2, 1 },
+                                new int[] { 1, 2, 4, 8, 4, 2, 1 },
+                                new int[] { 1, 2, 4, 4, 4, 2, 1 },
+                                new int[] { 1, 2, 2, 2, 2, 2, 1 },
+                                new int[] { 1, 1, 1, 1, 1, 1, 1 } },
+                               aperture, 1));
 
                             break;
 

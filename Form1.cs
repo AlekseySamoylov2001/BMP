@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BMP1
@@ -342,7 +336,10 @@ namespace BMP1
 
             for (int i = 0; i < Red[0].Length; i++)
                 for (int j = 0; j < Red.Length; j++)
-                    bitmap.SetPixel(i, j, Color.FromArgb(Red[j][i], Green[j][i], Blue[j][i]));
+                    bitmap.SetPixel(i, j, Color.FromArgb(
+                        Red[j][i] > 0 ? Red[j][i] < 255 ? Red[j][i] : 255 : 0,
+                        Green[j][i] > 0 ? Green[j][i] < 255 ? Green[j][i] : 255 : 0,
+                        Blue[j][i] > 0 ? Blue[j][i] < 255 ? Blue[j][i] : 255 : 0));
 
             return bitmap;
         }
@@ -392,10 +389,6 @@ namespace BMP1
                     color[i - borderH][j - borderW] = Convert.ToInt32(value / sum);
                 }
             }
-
-            //for (int i = 0; i < color.Length; i++)
-            //    for (int j = 0; j < color[i].Length; j++)
-            //        color[i][j] = filteredColor[borderH + i][borderW + j];
         }
 
         private Bitmap SSchemeBitmap(int[][] h)
@@ -408,7 +401,86 @@ namespace BMP1
 
             for (int i = 0; i < Red[0].Length; i++)
                 for (int j = 0; j < Red.Length; j++)
-                    bitmap.SetPixel(i, j, Color.FromArgb(Red[j][i], Green[j][i], Blue[j][i]));
+                    bitmap.SetPixel(i, j, Color.FromArgb(
+                        Red[j][i] > 0 ? Red[j][i] < 255 ? Red[j][i] : 255 : 0,
+                        Green[j][i] > 0 ? Green[j][i] < 255 ? Green[j][i] : 255 : 0,
+                        Blue[j][i] > 0 ? Blue[j][i] < 255 ? Blue[j][i] : 255 : 0));
+
+            return bitmap;
+        }
+
+        private void TSchemeColor(ref int[][] color, int[][] h)
+        {
+            int bigHeight = color.Length + h.Length - 1;
+            int bigWidth = color[0].Length + h[0].Length - 1;
+            int borderH = h.Length / 2;
+            int borderW = h[0].Length / 2;
+
+            int[][] filteredColor = new int[bigHeight][];
+
+            for (int i = 0; i < bigHeight; i++)
+                filteredColor[i] = new int[bigWidth];
+
+            for (int i = 0; i < color.Length; i++)
+                for (int j = 0; j < color[i].Length; j++)
+                    filteredColor[borderH + i][borderW + j] = color[i][j];
+
+            for (int i = borderH; i < color.Length; i++)
+                for (int j = 0; j < borderW; j++)
+                    filteredColor[i][j] = filteredColor[(color.Length - borderH + i - 1) % color.Length][color[i].Length - borderW + j];
+
+            for (int i = borderH; i < color.Length; i++)
+                for (int j = color[i].Length; j < bigWidth; j++)
+                    filteredColor[i][j] = filteredColor[(i + 1) % color.Length][borderW + j - color[i].Length];
+
+            for (int i = 0; i < borderH; i++)
+                for (int j = 0; j < bigWidth; j++)
+                    filteredColor[i][j] = filteredColor[filteredColor.Length - borderH + i - 1][j];
+
+            for (int i = color.Length; i < bigHeight; i++)
+                for (int j = 0; j < bigWidth; j++)
+                    filteredColor[i][j] = filteredColor[borderH + i - color.Length][j];
+
+            int sum = 0;
+
+            for (int i = 0; i < h.Length; i++)
+                for (int j = 0; j < h[i].Length; j++)
+                    sum += h[i][j];
+
+            if (sum == 0)
+                sum = 1;
+
+            for (int i = borderH; i < color.Length; i++)
+            {
+                for (int j = borderW; j < color[i].Length; j++)
+                {
+                    double value = 0;
+                    int row = i - h.Length / 2;
+                    int col = j - h[0].Length / 2;
+
+                    for (int k = 0; k < h.Length; k++)
+                        for (int l = 0; l < h[k].Length; l++)
+                            value += filteredColor[row + k][col + l] * h[k][l];
+
+                    color[i - borderH][j - borderW] = Convert.ToInt32(value / sum);
+                }
+            }
+        }
+
+        private Bitmap TSchemeBitmap(int[][] h)
+        {
+            Bitmap bitmap = new Bitmap(Red[0].Length, Red.Length);
+
+            TSchemeColor(ref Red, h);
+            TSchemeColor(ref Green, h);
+            TSchemeColor(ref Blue, h);
+
+            for (int i = 0; i < Red[0].Length; i++)
+                for (int j = 0; j < Red.Length; j++)
+                    bitmap.SetPixel(i, j, Color.FromArgb(
+                        Red[j][i] > 0 ? Red[j][i] < 255 ? Red[j][i] : 255 : 0,
+                        Green[j][i] > 0 ? Green[j][i] < 255 ? Green[j][i] : 255 : 0,
+                        Blue[j][i] > 0 ? Blue[j][i] < 255 ? Blue[j][i] : 255 : 0));
 
             return bitmap;
         }
@@ -471,10 +543,24 @@ namespace BMP1
                 for (int j = 0; j < dataGridView2.Columns.Count; j++)
                     h[i][j] = Convert.ToInt32(dataGridView2.Rows[i].Cells[j].Value);
             }
-            //new Bitmap(PSchemeBitmap(h), new Size(300, 300));
 
-            //pictureBox1.Image = new Bitmap(PSchemeBitmap(h), new Size(300, 300));
-            pictureBox1.Image = new Bitmap(SSchemeBitmap(h), new Size(300, 300));
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    pictureBox1.Image = new Bitmap(PSchemeBitmap(h), new Size(300, 300));
+                    break;
+
+                case 1:
+                    pictureBox1.Image = new Bitmap(SSchemeBitmap(h), new Size(300, 300));
+                    break;
+
+                case 2:
+                    pictureBox1.Image = new Bitmap(TSchemeBitmap(h), new Size(300, 300));
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
