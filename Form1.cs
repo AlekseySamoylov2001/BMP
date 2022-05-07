@@ -292,7 +292,7 @@ namespace BMP1
             dataGridView2.CurrentCell = null;
         }
 
-        private int[][] PSchemeColor(int[][] color, int[][] h)
+        private void PSchemeColor(ref int[][] color, int[][] h)
         {
             int[][] filteredColor = new int[color.Length][];
 
@@ -329,24 +329,86 @@ namespace BMP1
                 }
             }
 
-            return filteredColor;
+            color = filteredColor;
         }
 
         private Bitmap PSchemeBitmap(int[][] h)
         {
             Bitmap bitmap = new Bitmap(Red[0].Length, Red.Length);
 
-            int[][] filteredRed = PSchemeColor(Red, h);
-            int[][] filteredGreen = PSchemeColor(Green, h);
-            int[][] filteredBlue = PSchemeColor(Blue, h);
-
-            Red = filteredRed;
-            Green = filteredGreen;
-            Blue = filteredBlue;
+            PSchemeColor(ref Red, h);
+            PSchemeColor(ref Green, h);
+            PSchemeColor(ref Blue, h);
 
             for (int i = 0; i < Red[0].Length; i++)
                 for (int j = 0; j < Red.Length; j++)
-                    bitmap.SetPixel(i, j, Color.FromArgb(filteredRed[j][i], filteredGreen[j][i], filteredBlue[j][i]));
+                    bitmap.SetPixel(i, j, Color.FromArgb(Red[j][i], Green[j][i], Blue[j][i]));
+
+            return bitmap;
+        }
+
+        private void SSchemeColor(ref int[][] color, int[][] h)
+        {
+            int bigHeight = color.Length + h.Length - 1;
+            int bigWidth = color[0].Length + h[0].Length - 1;
+            int borderH = h.Length / 2;
+            int borderW = h[0].Length / 2;
+
+            int[][] filteredColor = new int[bigHeight][];
+
+            for (int i = 0; i < bigHeight; i++)
+            {
+                filteredColor[i] = new int[bigWidth];
+
+                for (int j = 0; j < bigWidth; j++)
+                    filteredColor[i][j] = 0;
+            }
+
+            for (int i = 0; i < color.Length; i++)
+                for (int j = 0; j < color[i].Length; j++)
+                    filteredColor[borderH + i][borderW + j] = color[i][j];
+
+            int sum = 0;
+
+            for (int i = 0; i < h.Length; i++)
+                for (int j = 0; j < h[i].Length; j++)
+                    sum += h[i][j];
+
+            if (sum == 0)
+                sum = 1;
+
+            for (int i = borderH; i < color.Length; i++)
+            {
+                for (int j = borderW; j < color[i].Length; j++)
+                {
+                    double value = 0;
+                    int row = i - h.Length / 2;
+                    int col = j - h[0].Length / 2;
+
+                    for (int k = 0; k < h.Length; k++)
+                        for (int l = 0; l < h[k].Length; l++)
+                            value += filteredColor[row + k][col + l] * h[k][l];
+
+                    color[i - borderH][j - borderW] = Convert.ToInt32(value / sum);
+                }
+            }
+
+            //for (int i = 0; i < color.Length; i++)
+            //    for (int j = 0; j < color[i].Length; j++)
+            //        color[i][j] = filteredColor[borderH + i][borderW + j];
+        }
+
+        private Bitmap SSchemeBitmap(int[][] h)
+        {
+            Bitmap bitmap = new Bitmap(Red[0].Length, Red.Length);
+
+            SSchemeColor(ref Red, h);
+            SSchemeColor(ref Green, h);
+            SSchemeColor(ref Blue, h);
+
+            for (int i = 0; i < Red[0].Length; i++)
+                for (int j = 0; j < Red.Length; j++)
+                    bitmap.SetPixel(i, j, Color.FromArgb(Red[j][i], Green[j][i], Blue[j][i]));
 
             return bitmap;
         }
@@ -382,19 +444,19 @@ namespace BMP1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form2 gist1 = new Form2(Red);
+            Form2 gist1 = new Form2(Red, "Red histogram");
             gist1.Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Form2 gist2 = new Form2(Green);
+            Form2 gist2 = new Form2(Green, "Green histogram");
             gist2.Show();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 gist3 = new Form2(Blue);
+            Form2 gist3 = new Form2(Blue, "Blue histogram");
             gist3.Show();
         }
 
@@ -410,8 +472,9 @@ namespace BMP1
                     h[i][j] = Convert.ToInt32(dataGridView2.Rows[i].Cells[j].Value);
             }
             //new Bitmap(PSchemeBitmap(h), new Size(300, 300));
-            
-            pictureBox1.Image = new Bitmap(PSchemeBitmap(h), new Size(300, 300));
+
+            //pictureBox1.Image = new Bitmap(PSchemeBitmap(h), new Size(300, 300));
+            pictureBox1.Image = new Bitmap(SSchemeBitmap(h), new Size(300, 300));
         }
 
         private void button6_Click(object sender, EventArgs e)

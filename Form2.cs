@@ -14,11 +14,12 @@ namespace BMP1
     public partial class Form2 : Form
     {
         public int[][] color;
-        public Form2(int[][] c)
+        public Form2(int[][] c, string name)
         {
             InitializeComponent();
 
             color = c;
+            Text = name;
 
             //создаем элемент Chart
             Chart myChart = new Chart();
