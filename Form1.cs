@@ -425,17 +425,17 @@ namespace BMP1
                 for (int j = 0; j < color[i].Length; j++)
                     filteredColor[borderH + i][borderW + j] = color[i][j];
 
-            for (int i = borderH; i < color.Length; i++)
+            for (int i = borderH; i < color.Length + borderH; i++)
                 for (int j = 0; j < borderW; j++)
-                    filteredColor[i][j] = filteredColor[(color.Length - borderH + i - 1) % color.Length][color[i].Length - borderW + j];
+                    filteredColor[i][j] = filteredColor[borderH + (color.Length - borderH + i - 1) % color.Length][color[0].Length + j];
 
-            for (int i = borderH; i < color.Length; i++)
-                for (int j = color[i].Length; j < bigWidth; j++)
-                    filteredColor[i][j] = filteredColor[(i + 1) % color.Length][borderW + j - color[i].Length];
+            for (int i = borderH; i < color.Length + borderH; i++)
+                for (int j = color[0].Length; j < bigWidth; j++)
+                    filteredColor[i][j] = filteredColor[borderH + (i - borderH + 1) % color.Length][borderW + j - color[0].Length];
 
             for (int i = 0; i < borderH; i++)
                 for (int j = 0; j < bigWidth; j++)
-                    filteredColor[i][j] = filteredColor[filteredColor.Length - borderH + i - 1][j];
+                    filteredColor[i][j] = filteredColor[filteredColor.Length - 2*borderH + i - 1][j];
 
             for (int i = color.Length; i < bigHeight; i++)
                 for (int j = 0; j < bigWidth; j++)
