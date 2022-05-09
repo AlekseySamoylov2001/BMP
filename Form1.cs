@@ -530,7 +530,7 @@ namespace BMP1
                 if (srcImage != null)
                 {
                     FillTabl();
-                        
+
                     button7.Text = "Сбросить таблицу";
 
                     button2.Enabled = true;
@@ -561,6 +561,28 @@ namespace BMP1
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             DefaultDataGrid();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.InitialDirectory = "";
+                saveFileDialog.Filter = "BMP files (*.BMP)|*.BMP";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    Bitmap bitmap = new Bitmap(Red[0].Length, Red.Length);
+
+                    for (int i = 0; i < Red[0].Length; i++)
+                        for (int j = 0; j < Red.Length; j++)
+                            bitmap.SetPixel(i, j, Color.FromArgb(Red[j][i], Green[j][i], Blue[j][i]));
+
+                    bitmap.Save(saveFileDialog.FileName);
+                }
+            }
         }
     }
 }
