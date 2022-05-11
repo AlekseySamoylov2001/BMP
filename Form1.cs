@@ -161,34 +161,6 @@ namespace BMP1
             return entropy - entropy / Math.Log(h + 1, 2);
         }
 
-        private void FillColumn(int[][] color, int column, int min, int max)
-        {
-            double K1 = Math.Abs(G_1(color) / Math.Sqrt((double)6 / (color.Length * color[0].Length)));
-            double K2 = Math.Abs(G_2(color) / Math.Sqrt((double)24 / (color.Length * color[0].Length)));
-
-            dataGridView1[column, 0].Value = min;
-            dataGridView1[column, 1].Value = max;
-            dataGridView1[column, 2].Value = max - min;
-            dataGridView1[column, 3].Value = Math.Round(M_k(color, 1), 2);
-            dataGridView1[column, 4].Value = Math.Round(M_k(color, 2), 2);
-            dataGridView1[column, 5].Value = Math.Round(M_k(color, 3), 2);
-            dataGridView1[column, 6].Value = Math.Round(M_k(color, 4), 2);
-            dataGridView1[column, 7].Value = Math.Round(AnM_k(color, 1), 2);
-            dataGridView1[column, 8].Value = Math.Round(AnM_k(color, 2), 2);
-            dataGridView1[column, 9].Value = Math.Round(AnM_k(color, 3), 2);
-            dataGridView1[column, 10].Value = Math.Round(AnM_k(color, 4), 2);
-            dataGridView1[column, 11].Value = Math.Round(U_2(color), 2);
-            dataGridView1[column, 12].Value = Math.Round(U_3(color), 2);
-            dataGridView1[column, 13].Value = Math.Round(U_4(color), 2);
-            dataGridView1[column, 14].Value = Math.Round(G_1(color), 2);
-            dataGridView1[column, 15].Value = Math.Round(G_2(color), 2);
-            dataGridView1[column, 16].Value = K1;
-            dataGridView1[column, 17].Value = K2;
-            dataGridView1[column, 18].Value = K1 <= 3 && K2 <= 3 ? "Нормальное" : "Не нормальное";
-            dataGridView1[column, 19].Value = Math.Round(Entropy(color), 2);
-            dataGridView1[column, 20].Value = Math.Round(RelativeEntropy(color, max - min), 2);
-            dataGridView1[column, 21].Value = Math.Round(Redundancy(color, max - min), 2);
-        }
 
         private int FillTabl()
         {
@@ -210,9 +182,39 @@ namespace BMP1
                 }
             }
 
+            void FillColumn(int[][] color, int column, int min, int max)
+            {
+                double K1 = Math.Abs(G_1(color) / Math.Sqrt((double)6 / (color.Length * color[0].Length)));
+                double K2 = Math.Abs(G_2(color) / Math.Sqrt((double)24 / (color.Length * color[0].Length)));
+
+                dataGridView1[column, 0].Value = min;
+                dataGridView1[column, 1].Value = max;
+                dataGridView1[column, 2].Value = max - min;
+                dataGridView1[column, 3].Value = Math.Round(M_k(color, 1), 2);
+                dataGridView1[column, 4].Value = Math.Round(M_k(color, 2), 2);
+                dataGridView1[column, 5].Value = Math.Round(M_k(color, 3), 2);
+                dataGridView1[column, 6].Value = Math.Round(M_k(color, 4), 2);
+                dataGridView1[column, 7].Value = Math.Round(AnM_k(color, 1), 2);
+                dataGridView1[column, 8].Value = Math.Round(AnM_k(color, 2), 2);
+                dataGridView1[column, 9].Value = Math.Round(AnM_k(color, 3), 2);
+                dataGridView1[column, 10].Value = Math.Round(AnM_k(color, 4), 2);
+                dataGridView1[column, 11].Value = Math.Round(U_2(color), 2);
+                dataGridView1[column, 12].Value = Math.Round(U_3(color), 2);
+                dataGridView1[column, 13].Value = Math.Round(U_4(color), 2);
+                dataGridView1[column, 14].Value = Math.Round(G_1(color), 2);
+                dataGridView1[column, 15].Value = Math.Round(G_2(color), 2);
+                dataGridView1[column, 16].Value = K1;
+                dataGridView1[column, 17].Value = K2;
+                dataGridView1[column, 18].Value = K1 <= 3 && K2 <= 3 ? "Нормальное" : "Не нормальное";
+                dataGridView1[column, 19].Value = Math.Round(Entropy(color), 2);
+                dataGridView1[column, 20].Value = Math.Round(RelativeEntropy(color, max - min), 2);
+                dataGridView1[column, 21].Value = Math.Round(Redundancy(color, max - min), 2);
+            }
+
             FillColumn(Red, 1, minR, maxR);
             FillColumn(Green, 2, minG, maxG);
             FillColumn(Blue, 3, minB, maxB);
+
 
             return 0;
         }
