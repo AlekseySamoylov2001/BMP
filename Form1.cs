@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BMP1
 {
@@ -489,6 +490,36 @@ namespace BMP1
 
         private void button5_Click(object sender, EventArgs e)
         {
+            switch (comboBox3.SelectedIndex)
+            {
+                case 0:
+                    int[][] Middle = new int[srcImage.Height][];
+
+                    for (int i = 0; i < srcImage.Height; i++)
+                    {
+                        Middle[i] = new int[srcImage.Width];
+
+                        for (int j = 0; j < srcImage.Width; j++)
+                        {
+                            Middle[i][j] = Convert.ToInt32(
+                                0.2125 * Convert.ToDouble(Red[i][j]) +
+                                0.7154 * Convert.ToDouble(Green[i][j]) +
+                                0.0721 * Convert.ToDouble(Blue[i][j]));
+                        }
+                    }
+                    Bitmap bitmap = new Bitmap(srcImage.Width, srcImage.Height);
+
+                    for (int i = 0; i < srcImage.Width; i++)
+                        for (int j = 0; j < srcImage.Height; j++)
+                            bitmap.SetPixel(i, j, Color.FromArgb(Middle[j][i], Middle[j][i], Middle[j][i]));
+
+                    Bitmap img = new Bitmap(bitmap, new Size(300, 300));
+                    pictureBox1.Image = img;
+                    break;
+                default:
+                    break;
+            }
+
             int[][] h = new int[dataGridView2.Rows.Count][];
 
             for (int i = 0; i < dataGridView2.Rows.Count; i++)
@@ -555,7 +586,7 @@ namespace BMP1
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3(comboBox3.SelectedIndex, 3 + comboBox2.SelectedIndex * 2);
+            Form3 form3 = new Form3(comboBox3.SelectedIndex - 1, 3 + comboBox2.SelectedIndex * 2);
             form3.Owner = this;
             form3.Show();
         }
@@ -585,6 +616,150 @@ namespace BMP1
                     bitmap.Save(saveFileDialog.FileName);
                 }
             }
+        }
+
+
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            BinaryWriter binaryWriter = new BinaryWriter(File.Open("test.dat", FileMode.OpenOrCreate));
+
+            byte size = 4;
+
+            binaryWriter.Write(srcImage.Height);
+            binaryWriter.Write(srcImage.Width);
+            binaryWriter.Write(size);
+
+            void Compression(int y, int x)
+            {
+                bool[] result = new bool[size * size];
+
+                int sizeY = srcImage.Height - y < size ? srcImage.Height - y : size;
+                int sizeX = srcImage.Width - x < size ? srcImage.Width - x : size;
+
+                int[][] Middle = new int[size][];
+
+                for (int i = 0; i < size; i++)
+                    Middle[i] = new int[size];
+
+                for (int i = 0; i < sizeY; i++)
+                    for (int j = 0; j < sizeX; j++)
+                        Middle[i][j] = Convert.ToInt32(
+                            0.2125 * Convert.ToDouble(Red[y + i][x + j]) +
+                            0.7154 * Convert.ToDouble(Green[y + i][x + j]) +
+                            0.0721 * Convert.ToDouble(Blue[y + i][x + j]));
+
+
+                double C = 0;
+                double E = 0;
+
+                for (int i = 0; i < sizeY; i++)
+                    for (int j = 0; j < sizeX; j++)
+                    {
+                        C += Middle[i][j];
+                        E += Math.Pow(Middle[i][j], 2);
+                    }
+
+                C /= sizeY * sizeX;
+                E /= sizeY * sizeX;
+
+                double delta = Math.Sqrt(E - Math.Pow(C, 2));
+
+                int q = 0;
+
+                for (int i = 0; i < sizeY; i++)
+                    for (int j = 0; j < sizeX; j++)
+                        q += Middle[i][j] > C ? 1 : 0;
+
+                byte a;
+                byte b;
+
+                int temp = Convert.ToInt32(C - Convert.ToByte(delta * Math.Sqrt(Convert.ToDouble(q) / (sizeY * sizeX - q))));
+
+                if (temp <= 0)
+                    a = 0;
+                else
+                    a = Convert.ToByte(temp);
+
+                if (q == 0)
+                    b = Convert.ToByte(C);
+                else
+                    b = Convert.ToByte(C + q == 0 ? 0 : Convert.ToByte(delta * Math.Sqrt((sizeY * sizeX - q) / Convert.ToDouble(q))));
+
+                binaryWriter.Write(a);
+                binaryWriter.Write(b);
+
+                ushort number = 0;
+
+                for (int i = 0; i < size; i++)
+                    for (int j = 0; j < size; j++)
+                        number += Convert.ToUInt16(Math.Pow(2, i * size + j));
+
+                binaryWriter.Write(number);
+            }
+
+            for (int i = 0; i < srcImage.Height; i += size)
+                for (int j = 0; j < srcImage.Width; j += size)
+                    Compression(i, j);
+
+            binaryWriter.Close();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            BinaryReader binaryReader = new BinaryReader(File.Open("test.dat", FileMode.OpenOrCreate));
+
+            int height = binaryReader.ReadInt32();
+            int width = binaryReader.ReadInt32();
+            byte size = binaryReader.ReadByte();
+
+            byte[][] color = new byte[height][];
+
+            for (int i = 0; i < height; i++)
+                color[i] = new byte[width];
+
+
+            void Uncompression(int y, int x)
+            {
+                byte a = binaryReader.ReadByte();
+                byte b = binaryReader.ReadByte();
+
+                ushort number = binaryReader.ReadUInt16();
+
+                int sizeY = height - y < size ? height - y : size;
+                int sizeX = width - x < size ? width - x : size;
+
+                byte[] ab = new byte[size * size];
+
+                for (int i = ab.Length - 1; i >= 0; i--)
+                {
+                    ab[i] = Convert.ToByte(number % 2);
+                    number /= 2;
+                }
+
+                for (int i = 0; i < sizeY; i++)
+                {
+                    for (int j = 0; j < sizeX; j++)
+                    {
+                        color[y + i][x + j] = ab[i * size + j] == 0 ? a : b;
+                    }
+                }
+            }
+
+            for (int i = 0; i < height; i += size)
+                for (int j = 0; j < width; j += size)
+                    Uncompression(i, j);
+
+            binaryReader.Close();
+
+            Bitmap bitmap = new Bitmap(width, height);
+
+            for (int i = 0; i < width; i++)
+                for (int j = 0; j < height; j++)
+                    bitmap.SetPixel(i, j, Color.FromArgb(color[j][i], color[j][i], color[j][i]));
+
+            Bitmap img = new Bitmap(bitmap, new Size(300, 300));
+            pictureBox1.Image = img;
         }
     }
 }
