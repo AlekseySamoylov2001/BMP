@@ -157,42 +157,42 @@ namespace BMP1
 
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, 1 },
-                                new int[] { 1, -2, 1 },
+                                new int[] { 1, -1, 1 },
                                 new int[] { -1, -1, -1 } },
                                 aperture, 0));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, 1 },
-                                new int[] { -1, -2, 1 },
+                                new int[] { -1, -1, 1 },
                                 new int[] { -1, -1, 1 } },
                                 aperture, 1));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { -1, 1, 1 },
-                                new int[] { -1, -2, 1 },
+                                new int[] { -1, -1, 1 },
                                 new int[] { -1, 1, 1 } },
                                aperture, 2));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { -1, -1, 1 },
-                                new int[] { -1, -2, 1 },
+                                new int[] { -1, -1, 1 },
                                 new int[] { 1, 1, 1 } },
                                aperture, 3));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { -1, -1, -1 },
-                                new int[] { 1, -2, 1 },
+                                new int[] { 1, -1, 1 },
                                 new int[] { 1, 1, 1 } },
                                aperture, 4));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, -1, -1 },
-                                new int[] { 1, -2, -1 },
+                                new int[] { 1, -1, -1 },
                                 new int[] { 1, 1, 1 } },
                                aperture, 5));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, -1 },
-                                new int[] { 1, -2, -1 },
+                                new int[] { 1, -1, -1 },
                                 new int[] { 1, 1, -1 } },
                                aperture, 6));
                             dataGrids.Add(CreateMatrix(new int[][] {
                                 new int[] { 1, 1, 1 },
-                                new int[] { 1, -2, -1 },
+                                new int[] { 1, -1, -1 },
                                 new int[] { 1, -1, -1 } },
                                aperture, 7));
 
